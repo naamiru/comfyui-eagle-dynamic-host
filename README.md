@@ -30,7 +30,7 @@ All inputs other than the ones listed below behave the same as ComfyUI’s stand
 
 ![EagleFeeder](./doc/eagle.png)
 
-- `tags`: Tags to attach to the image.
+- `tags`: Optional tags to attach to the image. Leave disconnected for no tags. Empty or whitespace-only tags are ignored; surrounding whitespace is trimmed.
 
   - Can use prompt tags or tags from [WD14-Tagger](https://github.com/pythongosssss/ComfyUI-WD14-Tagger?tab=readme-ov-file).
 

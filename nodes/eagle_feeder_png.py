@@ -14,13 +14,13 @@ class EagleFeederPng(EagleFeederBase):
         return {
             "required": {
                 "images": ("IMAGE",),
-                "tags": ("STRING", {"default": "", "forceInput": True}),
                 "folder_name": ("STRING", {"default": ""}),
                 "eagle_host": ("STRING", {"default": "http://localhost:41595"}),
                 "eagle_token": ("STRING", {"default": ""}),
                 "file_server_host": ("STRING", {"default": "localhost"}),
                 "embed_workflow": ("BOOLEAN", {"default": True}),
             },
+            "optional": {"tags": ("STRING", {"default": "", "forceInput": True})},
             "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"},
         }
 
@@ -29,7 +29,6 @@ class EagleFeederPng(EagleFeederBase):
     def send_to_eagle(
         self,
         images: list[torch.Tensor],
-        tags: list[str],
         folder_name: list[str],
         eagle_host: list[str],
         eagle_token: list[str],
@@ -37,6 +36,7 @@ class EagleFeederPng(EagleFeederBase):
         embed_workflow: list[bool],
         prompt: list,
         extra_pnginfo: list,
+        tags: list[str] | None = None,
     ) -> dict:
         images = images[0]
         folder_name = folder_name[0]
@@ -69,7 +69,7 @@ class EagleFeederPng(EagleFeederBase):
             else:
                 image.save(file_path, format="PNG")
 
-            tag_list = tags[idx].split(",")
+            tag_list = tags[min(idx, len(tags) - 1)].split(",") if tags else []
             self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host)
 
         return {}

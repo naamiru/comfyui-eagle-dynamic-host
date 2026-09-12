@@ -37,6 +37,20 @@ class TestAddFromUrl(unittest.TestCase):
         called_json = mock_post.call_args[1]["json"]
         self.assertEqual(called_json["url"], f"http://localhost:{FILE_SERVER_PORT}/test.png")
 
+    @patch.object(eagle_api_mod.requests, "post")
+    def test_filters_blank_tags(self, mock_post):
+        mock_post.return_value = MagicMock(status_code=200)
+        for tags, expected in [
+            ([], []),
+            ([""], []),
+            ([" ", "\t", ""], []),
+            ([" cat", "", " ", "dog "], ["cat", "dog"]),
+            (["cat", "dog"], ["cat", "dog"]),
+        ]:
+            with self.subTest(tags=tags):
+                self.api.add_from_url("test.png", tags, "folder1")
+                self.assertEqual(mock_post.call_args.kwargs["json"]["tags"], expected)
+
 
 if __name__ == "__main__":
     unittest.main()

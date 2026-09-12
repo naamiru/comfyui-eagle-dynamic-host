@@ -15,7 +15,6 @@ class EagleFeederAnimatedWebp(EagleFeederBase):
         return {
             "required": {
                 "images": ("IMAGE",),
-                "tags": ("STRING", {"default": "", "forceInput": True}),
                 "folder_name": ("STRING", {"default": ""}),
                 "eagle_host": ("STRING", {"default": "http://localhost:41595"}),
                 "eagle_token": ("STRING", {"default": ""}),
@@ -29,13 +28,13 @@ class EagleFeederAnimatedWebp(EagleFeederBase):
                 "quality": ("INT", {"default": 80, "min": 0, "max": 100}),
                 "method": (list(cls.methods.keys()),),
             },
+            "optional": {"tags": ("STRING", {"default": "", "forceInput": True})},
             "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"},
         }
 
     def send_to_eagle(
         self,
         images: torch.Tensor,
-        tags: str,
         folder_name: str,
         eagle_host: str,
         eagle_token: str,
@@ -47,6 +46,7 @@ class EagleFeederAnimatedWebp(EagleFeederBase):
         method: str,
         prompt=None,
         extra_pnginfo=None,
+        tags: str = "",
     ) -> dict:
         self.eagle_api = EagleAPI(eagle_host, eagle_token)
         folder_list = self.eagle_api.list_folder()
@@ -84,7 +84,7 @@ class EagleFeederAnimatedWebp(EagleFeederBase):
                 method=method,
             )
 
-        tag_list = tags.split(",")
+        tag_list = tags.split(",") if tags else []
         self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host)
 
         return {}

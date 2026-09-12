@@ -25,7 +25,7 @@ class EagleAPI:
         json = {
             "url": src_url,
             "name": file_name,
-            "tags": tag_list,
+            "tags": [tag.strip() for tag in tag_list if tag.strip()],
             "folderId": folder_id,
             "token": self.token,
         }

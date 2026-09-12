@@ -12,7 +12,6 @@ class EagleFeederMp4(EagleFeederBase):
         return {
             "required": {
                 "video": (IO.VIDEO,),
-                "tags": ("STRING", {"default": "", "forceInput": True}),
                 "folder_name": ("STRING", {"default": ""}),
                 "eagle_host": ("STRING", {"default": "http://localhost:41595"}),
                 "eagle_token": ("STRING", {"default": ""}),
@@ -21,13 +20,13 @@ class EagleFeederMp4(EagleFeederBase):
                 "format": (VideoContainer.as_input(), {"default": "auto"}),
                 "codec": (VideoCodec.as_input(), {"default": "auto"}),
             },
+            "optional": {"tags": ("STRING", {"default": "", "forceInput": True})},
             "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"},
         }
 
     def send_to_eagle(
         self,
         video: VideoInput,
-        tags: str,
         folder_name: str,
         eagle_host: str,
         eagle_token: str,
@@ -37,6 +36,7 @@ class EagleFeederMp4(EagleFeederBase):
         codec: str,
         prompt=None,
         extra_pnginfo=None,
+        tags: str = "",
     ) -> dict:
         self.eagle_api = EagleAPI(eagle_host, eagle_token)
         folder_list = self.eagle_api.list_folder()
@@ -54,7 +54,7 @@ class EagleFeederMp4(EagleFeederBase):
 
         video.save_to(file_path, format=format, codec=codec, metadata=metadata)
 
-        tag_list = tags.split(",")
+        tag_list = tags.split(",") if tags else []
         self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host)
 
         return {}

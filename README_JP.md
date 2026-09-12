@@ -30,7 +30,7 @@ PNG/AnimatedWEBP/MP4 に対応しています。
 
 ![EagleFeeder](./doc/eagle.png)
 
-- `tags` : 画像のタグ
+- `tags` : 画像のタグ（任意）。未接続の場合はタグなしで登録します。空文字・空白だけのタグは除外し、各タグの前後の空白は取り除きます。
   - プロンプトや[WD14-Tagger](./https://github.com/pythongosssss/ComfyUI-WD14-Tagger?tab=readme-ov-file)のタグを使用できます。
 - `folder_name` : 画像を保存する Eagle のフォルダ名
   - フォルダが存在しないときに新規作成する機能は未実装です。
