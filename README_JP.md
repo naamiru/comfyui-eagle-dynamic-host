@@ -26,12 +26,15 @@ git clone https://github.com/snghrsw/comfyui-eagle-dynamic-host.git
 
 PNG/AnimatedWEBP/MP4 に対応しています。
 
+プロンプトと生成設定を自動取得し、Eagle の annotation に A1111 形式で保存します。取得できない項目は省略します。
+
 下記以外の入力は ComfyUI 標準の SaveImage/SaveAnimatedWEBP/SaveVideo と同じです。
 
 ![EagleFeeder](./doc/eagle.png)
 
-- `tags` : 画像のタグ（任意）。未接続の場合はタグなしで登録します。空文字・空白だけのタグは除外し、各タグの前後の空白は取り除きます。
+- `tags` : 画像のタグ（任意）
   - プロンプトや[WD14-Tagger](./https://github.com/pythongosssss/ComfyUI-WD14-Tagger?tab=readme-ov-file)のタグを使用できます。
+- `positive` / `negative` : 自動取得したプロンプトを上書きする文字列入力（任意）
 - `folder_name` : 画像を保存する Eagle のフォルダ名
   - フォルダが存在しないときに新規作成する機能は未実装です。
   - 同名のフォルダが複数存在する場合、どれか一つに保存されます。

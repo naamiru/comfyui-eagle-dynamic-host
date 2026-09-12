@@ -15,6 +15,7 @@ def load_node(filename):
     ast.fix_missing_locations(tree)
     namespace = {
         "EagleFeederBase": object,
+        "build_annotation": MagicMock(return_value="test annotation"),
         "EagleAPI": MagicMock(),
         "tensor_to_pil": MagicMock(),
         "IO": MagicMock(),
@@ -56,6 +57,7 @@ class TestOptionalTags(unittest.TestCase):
                     self.assertEqual(len(calls), 2 if filename == "eagle_feeder_png.py" else 1)
                     expected = tags.split(",") if tags else []
                     for call in calls:
+                        self.assertEqual(call.kwargs["annotation"], "test annotation")
                         # PNG's connected empty string is filtered at the API boundary.
                         self.assertEqual([t for t in call.args[1] if t], [t for t in expected if t])
 

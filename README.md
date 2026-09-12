@@ -26,13 +26,17 @@ git clone https://github.com/snghrsw/comfyui-eagle-dynamic-host.git
 
 Supports PNG / Animated WEBP / MP4 formats.
 
+Automatically saves prompts and generation settings to Eagle annotations in A1111 format. Unavailable fields are omitted.
+
 All inputs other than the ones listed below behave the same as ComfyUI’s standard SaveImage / SaveAnimatedWEBP / SaveVideo nodes.
 
 ![EagleFeeder](./doc/eagle.png)
 
-- `tags`: Optional tags to attach to the image. Leave disconnected for no tags. Empty or whitespace-only tags are ignored; surrounding whitespace is trimmed.
+- `tags`: Optional image tags.
 
   - Can use prompt tags or tags from [WD14-Tagger](https://github.com/pythongosssss/ComfyUI-WD14-Tagger?tab=readme-ov-file).
+
+- `positive` / `negative`: Optional text inputs to override automatically retrieved prompts.
 
 - `folder_name`: The name of the Eagle folder where the image will be saved.
 

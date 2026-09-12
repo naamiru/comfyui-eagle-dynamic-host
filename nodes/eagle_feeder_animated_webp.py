@@ -1,3 +1,4 @@
+from ..utils.annotation import build_annotation
 import json
 
 import torch
@@ -28,8 +29,12 @@ class EagleFeederAnimatedWebp(EagleFeederBase):
                 "quality": ("INT", {"default": 80, "min": 0, "max": 100}),
                 "method": (list(cls.methods.keys()),),
             },
-            "optional": {"tags": ("STRING", {"default": "", "forceInput": True})},
-            "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"},
+            "optional": {
+                "tags": ("STRING", {"default": "", "forceInput": True}),
+                "positive": ("STRING", {"forceInput": True}),
+                "negative": ("STRING", {"forceInput": True}),
+            },
+            "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO", "unique_id": "UNIQUE_ID"},
         }
 
     def send_to_eagle(
@@ -47,6 +52,9 @@ class EagleFeederAnimatedWebp(EagleFeederBase):
         prompt=None,
         extra_pnginfo=None,
         tags: str = "",
+        unique_id=None,
+        positive=None,
+        negative=None,
     ) -> dict:
         self.eagle_api = EagleAPI(eagle_host, eagle_token)
         folder_list = self.eagle_api.list_folder()
@@ -85,6 +93,6 @@ class EagleFeederAnimatedWebp(EagleFeederBase):
             )
 
         tag_list = tags.split(",") if tags else []
-        self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host)
+        self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host, annotation=build_annotation(prompt, unique_id, positive, negative, pil_images[0].size))
 
         return {}

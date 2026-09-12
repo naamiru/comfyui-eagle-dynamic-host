@@ -38,6 +38,13 @@ class TestAddFromUrl(unittest.TestCase):
         self.assertEqual(called_json["url"], f"http://localhost:{FILE_SERVER_PORT}/test.png")
 
     @patch.object(eagle_api_mod.requests, "post")
+    def test_annotation(self, mock_post):
+        mock_post.return_value = MagicMock(status_code=200)
+        annotation = "a cat\n\nNegative prompt:blurry\nSteps: 20"
+        self.api.add_from_url("test.png", [], "folder1", annotation=annotation)
+        self.assertEqual(mock_post.call_args.kwargs["json"]["annotation"], annotation)
+
+    @patch.object(eagle_api_mod.requests, "post")
     def test_filters_blank_tags(self, mock_post):
         mock_post.return_value = MagicMock(status_code=200)
         for tags, expected in [

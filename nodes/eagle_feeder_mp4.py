@@ -1,3 +1,4 @@
+from ..utils.annotation import build_annotation
 from comfy.comfy_types.node_typing import IO
 from comfy_api.input import VideoInput
 from comfy_api.util.video_types import VideoCodec, VideoContainer
@@ -20,8 +21,12 @@ class EagleFeederMp4(EagleFeederBase):
                 "format": (VideoContainer.as_input(), {"default": "auto"}),
                 "codec": (VideoCodec.as_input(), {"default": "auto"}),
             },
-            "optional": {"tags": ("STRING", {"default": "", "forceInput": True})},
-            "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"},
+            "optional": {
+                "tags": ("STRING", {"default": "", "forceInput": True}),
+                "positive": ("STRING", {"forceInput": True}),
+                "negative": ("STRING", {"forceInput": True}),
+            },
+            "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO", "unique_id": "UNIQUE_ID"},
         }
 
     def send_to_eagle(
@@ -37,6 +42,9 @@ class EagleFeederMp4(EagleFeederBase):
         prompt=None,
         extra_pnginfo=None,
         tags: str = "",
+        unique_id=None,
+        positive=None,
+        negative=None,
     ) -> dict:
         self.eagle_api = EagleAPI(eagle_host, eagle_token)
         folder_list = self.eagle_api.list_folder()
@@ -54,7 +62,13 @@ class EagleFeederMp4(EagleFeederBase):
 
         video.save_to(file_path, format=format, codec=codec, metadata=metadata)
 
+        try:
+            size = video.get_dimensions()
+        except Exception:
+            # Annotation must not prevent saving when dimensions are unavailable.
+            size = None
+
         tag_list = tags.split(",") if tags else []
-        self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host)
+        self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host, annotation=build_annotation(prompt, unique_id, positive, negative, size))
 
         return {}
