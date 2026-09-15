@@ -7,7 +7,10 @@ import math
 SAMPLERS = {"KSampler", "KSamplerAdvanced", "D2 KSampler", "D2 KSampler(Advanced)"}
 
 
-def build_annotation(prompt, unique_id=None, positive=None, negative=None, size=None):
+def build_annotation(prompt, unique_id=None, positive=None, negative=None, size=None, annotation=None):
+    if isinstance(annotation, str) and annotation.strip():
+        return annotation
+
     graph = prompt if isinstance(prompt, dict) else {}
 
     def node(node_id):

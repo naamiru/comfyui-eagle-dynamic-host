@@ -31,6 +31,7 @@ class EagleFeederAnimatedWebp(EagleFeederBase):
             },
             "optional": {
                 "tags": ("STRING", {"default": "", "forceInput": True}),
+                "annotation": ("STRING", {"forceInput": True}),
                 "positive": ("STRING", {"forceInput": True}),
                 "negative": ("STRING", {"forceInput": True}),
             },
@@ -52,6 +53,7 @@ class EagleFeederAnimatedWebp(EagleFeederBase):
         prompt=None,
         extra_pnginfo=None,
         tags: str = "",
+        annotation: str | None = None,
         unique_id=None,
         positive=None,
         negative=None,
@@ -93,6 +95,6 @@ class EagleFeederAnimatedWebp(EagleFeederBase):
             )
 
         tag_list = tags.split(",") if tags else []
-        self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host, annotation=build_annotation(prompt, unique_id, positive, negative, pil_images[0].size))
+        self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host, annotation=build_annotation(prompt, unique_id, positive, negative, pil_images[0].size, annotation=annotation))
 
         return {}

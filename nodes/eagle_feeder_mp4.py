@@ -23,6 +23,7 @@ class EagleFeederMp4(EagleFeederBase):
             },
             "optional": {
                 "tags": ("STRING", {"default": "", "forceInput": True}),
+                "annotation": ("STRING", {"forceInput": True}),
                 "positive": ("STRING", {"forceInput": True}),
                 "negative": ("STRING", {"forceInput": True}),
             },
@@ -42,6 +43,7 @@ class EagleFeederMp4(EagleFeederBase):
         prompt=None,
         extra_pnginfo=None,
         tags: str = "",
+        annotation: str | None = None,
         unique_id=None,
         positive=None,
         negative=None,
@@ -69,6 +71,6 @@ class EagleFeederMp4(EagleFeederBase):
             size = None
 
         tag_list = tags.split(",") if tags else []
-        self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host, annotation=build_annotation(prompt, unique_id, positive, negative, size))
+        self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host, annotation=build_annotation(prompt, unique_id, positive, negative, size, annotation=annotation))
 
         return {}

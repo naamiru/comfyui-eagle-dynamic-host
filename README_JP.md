@@ -34,6 +34,7 @@ PNG/AnimatedWEBP/MP4 に対応しています。
 
 - `tags` : 画像のタグ（任意）
   - プロンプトや[WD14-Tagger](./https://github.com/pythongosssss/ComfyUI-WD14-Tagger?tab=readme-ov-file)のタグを使用できます。
+- `annotation` : Eagle の annotation 全文を上書きする文字列入力（任意）。未接続または空の場合は自動取得した annotation を使用します。
 - `positive` / `negative` : 自動取得したプロンプトを上書きする文字列入力（任意）
 - `folder_name` : 画像を保存する Eagle のフォルダ名
   - フォルダが存在しないときに新規作成する機能は未実装です。

@@ -32,6 +32,15 @@ class AnnotationTests(unittest.TestCase):
         self.assertTrue(result.startswith('a dog\nSteps:'))
         self.assertNotIn('blurry', result)
 
+    def test_explicit_annotation_overrides_generated_annotation(self):
+        self.assertEqual(
+            build(graph(), '6', annotation='custom annotation'),
+            'custom annotation',
+        )
+
+    def test_blank_explicit_annotation_falls_back_to_generated_annotation(self):
+        self.assertEqual(build(None, positive='cat', annotation='  \n'), 'cat')
+
     def test_unknown_values_omitted(self):
         g = graph()
         g['9'] = node('Compute', value=123)

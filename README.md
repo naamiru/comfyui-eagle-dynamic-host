@@ -36,6 +36,8 @@ All inputs other than the ones listed below behave the same as ComfyUI’s stand
 
   - Can use prompt tags or tags from [WD14-Tagger](https://github.com/pythongosssss/ComfyUI-WD14-Tagger?tab=readme-ov-file).
 
+- `annotation`: Optional text input that overrides the complete Eagle annotation. When disconnected or blank, the automatically generated annotation is used.
+
 - `positive` / `negative`: Optional text inputs to override automatically retrieved prompts.
 
 - `folder_name`: The name of the Eagle folder where the image will be saved.

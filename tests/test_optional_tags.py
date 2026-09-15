@@ -30,36 +30,45 @@ class TestOptionalTags(unittest.TestCase):
     def test_nodes_accept_missing_and_connected_tags(self):
         for filename in ["eagle_feeder_png.py", "eagle_feeder_mp4.py", "eagle_feeder_animated_webp.py"]:
             for tags in [None, "", "cat,, dog"]:
-                with self.subTest(filename=filename, tags=tags):
-                    cls, namespace = load_node(filename)
-                    inputs = cls.INPUT_TYPES()
-                    self.assertNotIn("tags", inputs["required"])
-                    self.assertTrue(inputs["optional"]["tags"][1]["forceInput"])
-                    node = cls()
-                    node.img_dir = "unused"
-                    node.find_id_by_name = MagicMock(return_value="folder")
-                    node.get_file_name = MagicMock(return_value="test")
-                    kwargs = dict(folder_name="", eagle_host="host", eagle_token="", file_server_host="localhost", embed_workflow=False)
-                    if filename == "eagle_feeder_png.py":
-                        kwargs = {key: [value] for key, value in kwargs.items()}
-                        kwargs.update(images=[[MagicMock(), MagicMock()]], prompt=[None], extra_pnginfo=[None])
-                        if tags is not None:
-                            kwargs["tags"] = [tags]
-                    else:
-                        if tags is not None:
-                            kwargs["tags"] = tags
-                        if filename == "eagle_feeder_mp4.py":
-                            kwargs.update(video=MagicMock(), format="auto", codec="auto")
+                for annotation in [None, "", "custom annotation"]:
+                    with self.subTest(filename=filename, tags=tags, annotation=annotation):
+                        cls, namespace = load_node(filename)
+                        inputs = cls.INPUT_TYPES()
+                        self.assertNotIn("tags", inputs["required"])
+                        self.assertTrue(inputs["optional"]["tags"][1]["forceInput"])
+                        self.assertNotIn("annotation", inputs["required"])
+                        self.assertTrue(inputs["optional"]["annotation"][1]["forceInput"])
+                        node = cls()
+                        node.img_dir = "unused"
+                        node.find_id_by_name = MagicMock(return_value="folder")
+                        node.get_file_name = MagicMock(return_value="test")
+                        kwargs = dict(folder_name="", eagle_host="host", eagle_token="", file_server_host="localhost", embed_workflow=False)
+                        if filename == "eagle_feeder_png.py":
+                            kwargs = {key: [value] for key, value in kwargs.items()}
+                            kwargs.update(images=[[MagicMock(), MagicMock()]], prompt=[None], extra_pnginfo=[None])
+                            if tags is not None:
+                                kwargs["tags"] = [tags]
+                            if annotation is not None:
+                                kwargs["annotation"] = [annotation]
                         else:
-                            kwargs.update(images=[MagicMock()], fps=6, lossless=True, quality=80, method="default")
-                    node.send_to_eagle(**kwargs)
-                    calls = namespace["EagleAPI"].return_value.add_from_url.call_args_list
-                    self.assertEqual(len(calls), 2 if filename == "eagle_feeder_png.py" else 1)
-                    expected = tags.split(",") if tags else []
-                    for call in calls:
-                        self.assertEqual(call.kwargs["annotation"], "test annotation")
-                        # PNG's connected empty string is filtered at the API boundary.
-                        self.assertEqual([t for t in call.args[1] if t], [t for t in expected if t])
+                            if tags is not None:
+                                kwargs["tags"] = tags
+                            if annotation is not None:
+                                kwargs["annotation"] = annotation
+                            if filename == "eagle_feeder_mp4.py":
+                                kwargs.update(video=MagicMock(), format="auto", codec="auto")
+                            else:
+                                kwargs.update(images=[MagicMock()], fps=6, lossless=True, quality=80, method="default")
+                        node.send_to_eagle(**kwargs)
+                        calls = namespace["EagleAPI"].return_value.add_from_url.call_args_list
+                        self.assertEqual(len(calls), 2 if filename == "eagle_feeder_png.py" else 1)
+                        expected = tags.split(",") if tags else []
+                        for call in calls:
+                            self.assertEqual(call.kwargs["annotation"], "test annotation")
+                            # PNG's connected empty string is filtered at the API boundary.
+                            self.assertEqual([t for t in call.args[1] if t], [t for t in expected if t])
+                        for call in namespace["build_annotation"].call_args_list:
+                            self.assertEqual(call.kwargs["annotation"], annotation)
 
 
 if __name__ == "__main__":

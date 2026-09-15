@@ -23,6 +23,7 @@ class EagleFeederPng(EagleFeederBase):
             },
             "optional": {
                 "tags": ("STRING", {"default": "", "forceInput": True}),
+                "annotation": ("STRING", {"forceInput": True}),
                 "positive": ("STRING", {"forceInput": True}),
                 "negative": ("STRING", {"forceInput": True}),
             },
@@ -42,6 +43,7 @@ class EagleFeederPng(EagleFeederBase):
         prompt: list,
         extra_pnginfo: list,
         tags: list[str] | None = None,
+        annotation: list[str] | None = None,
         unique_id=None,
         positive=None,
         negative=None,
@@ -79,6 +81,7 @@ class EagleFeederPng(EagleFeederBase):
                 image.save(file_path, format="PNG")
 
             tag_list = tags[min(idx, len(tags) - 1)].split(",") if tags else []
-            self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host, annotation=build_annotation(prompt, unique_id, positive[min(idx, len(positive) - 1)] if positive else None, negative[min(idx, len(negative) - 1)] if negative else None, image.size))
+            annotation_value = annotation[min(idx, len(annotation) - 1)] if annotation else None
+            self.eagle_api.add_from_url(file_name, tag_list, folder_id, file_server_host, annotation=build_annotation(prompt, unique_id, positive[min(idx, len(positive) - 1)] if positive else None, negative[min(idx, len(negative) - 1)] if negative else None, image.size, annotation=annotation_value))
 
         return {}
